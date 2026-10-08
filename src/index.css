@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: #0e0f11;
+  overflow: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Slides are authored on a fixed 1920×1080 canvas and scaled to fit the screen. */
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: center center;
+  overflow: hidden;
+  background: #0e0f11;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print / PDF: one slide per page, unscaled. */
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    height: auto;
+    overflow: visible;
+  }
+  .screen-only {
+    display: none !important;
+  }
+  .print-slide {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    break-after: page;
+    background: #0e0f11;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
