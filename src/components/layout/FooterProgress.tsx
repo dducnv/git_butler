@@ -5,6 +5,7 @@ import { SLIDES_METADATA } from '../../data/slidesData';
 interface FooterProgressProps {
   currentSlideIndex: number;
   totalSlides: number;
+  atStart: boolean;
   onPrev: () => void;
   onNext: () => void;
   onSelectSlide: (index: number) => void;
@@ -13,6 +14,7 @@ interface FooterProgressProps {
 export const FooterProgress: React.FC<FooterProgressProps> = ({
   currentSlideIndex,
   totalSlides,
+  atStart,
   onPrev,
   onNext,
   onSelectSlide,
@@ -23,7 +25,7 @@ export const FooterProgress: React.FC<FooterProgressProps> = ({
     <footer className="screen-only absolute bottom-6 left-12 right-12 flex items-center justify-between text-xs font-mono select-none z-30 pointer-events-auto">
       {/* Left: Slide indicator */}
       <div className="font-medium text-ink-muted">
-        <span className="text-ink-primary font-bold">{currentSlide.number}</span> / 0{totalSlides}
+        <span className="text-ink-primary font-bold">{currentSlide.number}</span> / {SLIDES_METADATA[totalSlides - 1].number}
       </div>
 
       {/* Middle: 8 minimal dots */}
@@ -53,7 +55,7 @@ export const FooterProgress: React.FC<FooterProgressProps> = ({
       <div className="flex items-center gap-2">
         <button
           onClick={onPrev}
-          disabled={currentSlideIndex === 0}
+          disabled={atStart}
           className="p-1.5 rounded-lg bg-canvas-surface/80 backdrop-blur hover:bg-canvas-subtle border border-canvas-border text-ink-secondary hover:text-ink-primary disabled:opacity-20 disabled:pointer-events-none transition-colors"
           title="Slide trước (←)"
         >

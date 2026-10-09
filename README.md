@@ -1,21 +1,26 @@
-# GitButler: Rethinking Git Workflow — Tech Sharing Presentation
+# GitButler: Quản lý nhiều nhánh song song trong một thư mục làm việc
 
-Một ứng dụng trình chiếu slide kỹ thuật theo phong cách tối giản **Apple Keynote**, tỷ lệ chuẩn **16:9** (1920×1080), phục vụ chia sẻ nội bộ cho các kỹ sư **Web, Backend và Flutter**.
+Ứng dụng trình chiếu cho buổi chia sẻ kỹ thuật 15 phút, khung 16:9 (1920×1080). Toàn bộ nội dung xoay quanh một tình huống trên project Flutter **abc-app**: đang phát triển giao diện bảng xếp hạng mới (`feat/leaderboard_v2`) thì bản `dev` cần build gặp lỗi ảnh câu hỏi; bản sửa lỗi cần được tách thành Pull Request riêng vào `dev`.
 
 ---
 
-## 📌 Nội Dung 8 Slide Kỹ Thuật
+## 📌 Nội dung 11 slide, đánh số 00–10 (khoảng 17 phút, gồm 5 phút demo trên ứng dụng thật)
 
-| # | Tiêu Đề | Nội Dung Trọng Tâm |
+| # | Slide | Nội dung |
 |---|---|---|
-| **01** | **GitButler: Rethinking Git Workflow** | Khái niệm Virtual Branches song song trong một thư mục làm việc. |
-| **02** | **Giới hạn của luồng làm việc đơn nhánh** | Phân tích quy trình truyền thống (stash → checkout → pop → conflict) và chi phí context switching. |
-| **03** | **Cơ chế Virtual Branches** | Quản lý nhiều nhánh ảo, gán thay đổi theo từng Hunk, cơ chế Apply & Unapply. |
-| **04** | **Parallel vs Stacked Branches** | So sánh nhánh độc lập (Parallel) và chuỗi nhánh phụ thuộc theo tầng (Stacked PRs). |
-| **05** | **Quy trình làm việc trên GitButler** | Các bước thao tác Web UI + Flutter kèm bộ mô phỏng trực quan. |
-| **06** | **GitButler + AI Coding Agents** | Lệnh `but agent setup`, cơ chế phân luồng nhánh cho AI và nguyên tắc bảo mật. |
-| **07** | **Git vs GitButler vs Git Worktree** | Bảng so sánh kỹ thuật khách quan và các lưu ý về shared working directory. |
-| **08** | **Takeaways & Q&A** | 3 điểm cốt lõi, đề xuất thử nghiệm thực tế và câu hỏi thảo luận nhóm. |
+| 00 | Nội dung trình bày | Mục lục; mỗi lần nhấn hiện thêm một mục, đủ 4 mục thì sang slide 01 |
+| 01 | GitButler | Quản lý nhiều nhánh song song trong một thư mục làm việc |
+| 02 | Vì sao GitButler ra đời | Giả định của Git (2005) so với cách làm việc hiện nay; ý tưởng cốt lõi |
+| 03 | Sửa lỗi gấp khi đang làm tính năng | Git (9 lệnh) và GitButler (4 thao tác) trên tình huống abc-app |
+| 04 | Chia Pull Request lớn thành chuỗi nhỏ | Stacked branches, tự động rebase |
+| 05 | Sửa, gộp, chuyển commit bằng kéo thả | Kèm lệnh Git tương đương |
+| 06 | Conflict và hoàn tác | So sánh 2×2 Git / GitButler |
+| 07 | Nhiều AI agent trong một thư mục | Worktree so với nhánh theo phiên |
+| 08 | Demo trên ứng dụng thật | Danh sách thao tác demo trên GitButler Desktop |
+| 09 | So sánh tổng hợp | Bảy tình huống |
+| 10 | Phạm vi áp dụng và thảo luận | Phù hợp khi, lưu ý, áp dụng thử |
+
+Thứ tự slide được khai báo trong `src/App.tsx` (`SLIDE_COMPONENTS`) và phải khớp với `src/data/slidesData.ts`. Dữ liệu kịch bản (tên nhánh, tên file, diff) tập trung tại `src/data/demoScenario.ts`; lời thoại tại `src/data/slidesData.ts`.
 
 ---
 
@@ -38,10 +43,10 @@ npm run build
 
 | Phím Tắt | Chức Năng |
 |---|---|
-| `→` / `Space` / `PageDown` | Chuyển sang slide tiếp theo |
+| `→` / `Space` / `PageDown` / click (slide 00) | Hiện mục tiếp theo hoặc chuyển slide |
 | `←` / `PageUp` | Quay lại slide trước |
-| `Home` / `End` | Về slide 1 / Đến slide 8 |
-| `1` đến `8` | Nhảy trực tiếp đến Slide tương ứng |
+| `Home` / `End` | Về slide đầu / Đến slide cuối |
+| `0` đến `9` | Nhảy trực tiếp đến slide 00–09 (dùng `?slide=N` trên URL cho slide bất kỳ) |
 | `N` hoặc `P` | Mở / Đóng **Presenter Notes** |
 | `F` | Bật / Tắt chế độ toàn màn hình (**Fullscreen**) |
 | `?` | Bảng phím tắt |
@@ -54,4 +59,4 @@ npm run build
 - **Phong cách Apple Keynote**: Tiêu đề to đậm, khoảng trống thoáng đãng, phân cấp thị giác rõ ràng, không có chữ nhỏ li ti hoặc đồng hồ đếm ngược gây phân tâm.
 - **Tập trung vào nội dung kỹ thuật**: Dùng ngôn từ kỹ thuật chính xác, trung tính, không kể chuyện dài dòng.
 - **Khung hình 1920×1080 co giãn tự động**: Tự động scale vừa khít mọi độ phân giải màn hình máy chiếu mà không bị vỡ layout hay xuất hiện thanh cuộn.
-- **Hỗ trợ in ấn / PDF**: Nhấn `Cmd + P` / `Ctrl + P` để xuất toàn bộ 8 slide chuẩn từng trang riêng biệt.
+- **Hỗ trợ in ấn / PDF**: Nhấn `Cmd + P` / `Ctrl + P` để xuất toàn bộ 11 slide chuẩn từng trang riêng biệt.

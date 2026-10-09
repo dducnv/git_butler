@@ -1,10 +1,11 @@
 
 export interface SlideData {
   id: number;
-  number: string; // '01', '02', etc.
+  number: string; // '00', '01', etc.; equals the slide's index in the deck
   title: string;
   subtitle: string;
   targetDurationSec: number; // Duration in seconds
+  steps?: number; // Build steps revealed one by one before advancing to the next slide
   speakerNotes: {
     durationNote: string;
     scriptVi: string;
@@ -13,25 +14,8 @@ export interface SlideData {
   };
 }
 
-export interface SimulationHunk {
-  id: string;
-  file: string;
-  lineRange: string;
-  codeSnippet: string;
-  desc: string;
-  category: 'web-login' | 'flutter-validation' | 'shared';
-  assignedLane: 'unstaged' | 'lane-login' | 'lane-validation';
-}
-
-export interface SimulationBranch {
-  id: 'lane-login' | 'lane-validation';
-  name: string;
-  color: string;
-  isApplied: boolean;
-  commits: Array<{
-    id: string;
-    message: string;
-    timestamp: string;
-    hunkIds: string[];
-  }>;
+/** Props every slide component receives. Slides without build steps ignore them. */
+export interface SlideProps {
+  step: number;
+  onNext: () => void;
 }

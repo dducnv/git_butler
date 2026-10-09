@@ -30,8 +30,9 @@ export function useKeyboardNavigation(h: KeyboardHandlers) {
         h.goTo(0);
       } else if (key === 'End') {
         h.goTo(h.total - 1);
-      } else if (/^[1-9]$/.test(key) && Number(key) <= h.total) {
-        h.goTo(Number(key) - 1);
+      } else if (/^[0-9]$/.test(key) && Number(key) < h.total) {
+        // Slide numbers start at 00, so the digit is the slide index.
+        h.goTo(Number(key));
       } else if (key === 'n' || key === 'N' || key === 'p' || key === 'P') {
         h.toggleNotes();
       } else if (key === 'f' || key === 'F') {

@@ -13,10 +13,10 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
   if (!isOpen) return null;
 
   const shortcuts = [
-    { key: '→ / Space / PageDown', desc: 'Chuyển sang slide tiếp theo' },
+    { key: '→ / Space / PageDown', desc: 'Hiện mục tiếp theo hoặc chuyển slide' },
     { key: '← / PageUp', desc: 'Quay lại slide trước đó' },
     { key: 'Home / End', desc: 'Về slide đầu tiên / Đến slide cuối cùng' },
-    { key: '1 - 8', desc: 'Nhảy trực tiếp đến Slide tương ứng' },
+    { key: '0 - 9', desc: 'Nhảy trực tiếp đến slide 00 đến 09' },
     { key: 'N / P', desc: 'Bật / Tắt Presenter Notes (Lời thoại người thuyết trình)' },
     { key: 'F', desc: 'Bật / Tắt chế độ toàn màn hình (Fullscreen Presentation)' },
     { key: '?', desc: 'Mở bảng phím tắt này' },

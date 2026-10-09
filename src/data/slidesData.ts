@@ -2,215 +2,254 @@ import { SlideData } from '../types/presentation';
 
 export const SLIDES_METADATA: SlideData[] = [
   {
+    id: 0,
+    number: '00',
+    title: 'Nội dung trình bày',
+    subtitle: 'Bốn phần: bối cảnh, lợi ích so với Git, demo, đánh giá',
+    targetDurationSec: 30,
+    steps: 4,
+    speakerNotes: {
+      durationNote: '30 giây',
+      scriptVi: `Ban đầu slide chỉ có tiêu đề. Mỗi lần nhấn (click, mũi tên phải hoặc Space) hiện thêm một mục:
+
+1. Vì sao GitButler ra đời: giả định của Git và cách làm việc hiện nay.
+2. Lợi ích so với Git: năm tình huống, mỗi tình huống một slide so sánh trực tiếp.
+3. Demo trên ứng dụng thật: GitButler Desktop với project abc-app.
+4. Đánh giá: so sánh tổng hợp, phạm vi áp dụng và thảo luận.
+
+Sau khi hiện đủ bốn mục, nhấn thêm một lần để sang slide tiêu đề.`,
+      keyPoints: ['Bối cảnh', 'Lợi ích so với Git', 'Demo trên ứng dụng thật', 'Đánh giá và thảo luận'],
+      transitionVi: 'Bắt đầu với GitButler.',
+    },
+  },
+  {
     id: 1,
     number: '01',
-    title: 'GitButler: Rethinking Git Workflow',
-    subtitle: 'Mô hình làm việc đa nhánh song song (Parallel Virtual Branches) trong cùng một workspace',
-    targetDurationSec: 45,
+    title: 'GitButler: Quản lý nhiều nhánh song song trong một thư mục làm việc',
+    subtitle: 'Tách bản sửa lỗi khỏi nhánh tính năng và tạo Pull Request riêng, không cần chuyển nhánh',
+    targetDurationSec: 40,
     speakerNotes: {
-      durationNote: '45 giây',
-      scriptVi: `Xin chào mọi người! Đã bao giờ các bạn đang code dở một tính năng UI phức tạp, bỗng dưng nhận được tin nhắn gấp: "Anh ơi, fix giúp em con bug hotfix trên API này ngay"? 
-
-Và thế là quy trình quen thuộc diễn ra: git stash, git checkout hotfix, sửa lỗi, test, commit, push, rồi quay lại git checkout feature, git stash pop... để rồi nhận lại đống conflict hoặc mất đà tập trung (mental context). 
-
-Hôm nay, mình muốn chia sẻ với team về GitButler — một công cụ tư duy lại cách chúng ta tương tác với Git, cho phép quản lý nhiều nhánh song song ngay trong cùng một thư mục làm việc mà không cần stash hay switch liên tục.`,
+      durationNote: '40 giây',
+      scriptVi: `Nội dung gồm ba phần: lý do GitButler ra đời; các lợi ích chính so với Git, minh hoạ trên project abc-app; demo trên ứng dụng thật và đánh giá phạm vi áp dụng.`,
       keyPoints: [
-        'Vấn đề phổ biến: context switching gây đứt gãy mạch tư duy của lập trình viên.',
-        'Mục tiêu buổi chia sẻ: Giới thiệu tư duy Virtual Branches & Stacked Branches của GitButler.',
-        'Thời lượng: 15 phút gồm lý thuyết cốt lõi, so sánh trực quan và live simulation.',
+        'Ví dụ xuyên suốt: project Flutter abc-app.',
+        'Cấu trúc: bối cảnh, lợi ích so với Git, demo, đánh giá.',
       ],
-      transitionVi: 'Để hiểu tại sao GitButler ra đời, trước hết hãy cùng nhìn thẳng vào cái giá thực sự của việc "nhảy nhánh" trong Git truyền thống.',
+      transitionVi: 'Trước hết là lý do GitButler ra đời.',
     },
   },
   {
     id: 2,
     number: '02',
-    title: 'The Context Switching Problem',
-    subtitle: 'Nỗi đau khi xoay sở giữa Feature UI, API Bugfix và Data Validation trong Git truyền thống',
+    title: 'Vì sao GitButler ra đời',
+    subtitle: 'Giả định của Git năm 2005 so với cách làm việc hiện nay',
     targetDurationSec: 90,
     speakerNotes: {
-      durationNote: '90 giây (1.5 phút)',
-      scriptVi: `Hãy cùng nhìn vào một kịch bản rất đời thường trong team chúng ta: Bạn đang làm Login UI cho Web. Đột nhiên cần fix gấp một logic trong API client, đồng thời tiện tay sửa luôn một regex validation bên Flutter/Mobile.
+      durationNote: '90 giây',
+      scriptVi: `Git ra đời năm 2005 cho dự án Linux kernel. Dữ liệu của Git (commit, cây thư mục, lịch sử) được thiết kế rất tốt và vẫn là nền tảng hiện nay. Tuy nhiên, cách làm việc mà Git giả định đã khác nhiều so với thực tế:
 
-Trong vanilla Git, tại một thời điểm HEAD chỉ trỏ vào duy nhất một commit trên một branch. Mỗi lần muốn chuyển việc, bạn phải git stash, nhớ lại stash@{0} là gì, hoặc tạo commit tạm 'WIP' rồi checkout nhánh khác.
+1. Một thư mục làm việc tương ứng một nhánh, trong khi hiện nay một người thường làm nhiều việc song song.
+2. Git yêu cầu chọn nhánh trước khi viết code; thực tế thường viết code trước rồi mới rõ thay đổi thuộc việc nào.
+3. Lịch sử commit được coi là ít khi sửa; hiện nay việc chỉnh, gộp, tách commit trước khi review là bình thường.
+4. Một người sửa code trong một repository; hiện nay có thêm AI agent cùng sửa code.
 
-Điều này gây ra 3 vấn đề lớn:
-Thứ nhất, mất đà tư duy: mỗi lần quay lại ta phải tự hỏi "mình đang code đến đâu", "stash nào của task nào".
-Thứ hai, nguy cơ stash collision hoặc quên commit rác khiến lịch sử git lộn xộn.
-Thứ ba, vanilla Git buộc bạn phải phân loại công việc TRƯỚC KHI viết code. Nhưng thực tế sáng tạo của lập trình viên là: chúng ta thường phát hiện ra bug hoặc nảy ra ý tưởng cải tiến trong lúc đang code dở tính năng khác.
-
-Cần làm rõ: Git không hề hỏng. Git được thiết kế từ năm 2005 cho mô hình Linux kernel với snapshot tuyến tính rất xuất sắc. Nhưng công cụ tương tác ở tầng workflow của chúng ta có thể được nâng cấp thông minh hơn.`,
+GitButler do Scott Chacon, đồng sáng lập GitHub và tác giả Pro Git, đồng sáng lập. Công cụ giữ nguyên dữ liệu Git và thay đổi lớp làm việc phía trên. Ý tưởng cốt lõi: một thư mục làm việc, nhiều nhánh cùng được apply; mỗi thay đổi được gán vào một nhánh sau khi viết, và mỗi nhánh tạo commit Git chuẩn của riêng nó. Các công cụ cùng hướng: Sapling của Meta, Jujutsu, Graphite.`,
       keyPoints: [
-        'Vanilla Git HEAD chỉ có thể active 1 branch duy nhất tại một thời điểm.',
-        'Thói quen git stash / commit tạm (WIP) làm loãng commit history và dễ mất code.',
-        'Chi phí nhận thức (cognitive load) cao khi phải dọn dẹp working directory liên tục.',
-        'Khẳng định: Git không lỗi thời, nhưng workflow tầng trên cần linh hoạt hơn.',
+        'Dữ liệu Git giữ nguyên; thay đổi nằm ở cách làm việc.',
+        'Bốn giả định cũ: một nhánh, chọn nhánh trước, ít sửa lịch sử, một người viết code.',
+        'Ý tưởng cốt lõi: một thư mục, nhiều nhánh được apply.',
+        'Xu hướng chung: Sapling, Jujutsu, Graphite.',
       ],
-      transitionVi: 'Vậy GitButler đã giải quyết bài toán này như thế nào mà không làm đảo lộn Git repository bên dưới?',
+      transitionVi: 'Lợi ích đầu tiên, minh hoạ bằng một tình huống thường gặp trên abc-app.',
     },
   },
   {
     id: 3,
     number: '03',
-    title: 'What Makes GitButler Different?',
-    subtitle: 'Virtual Branches: Một thư mục làm việc, nhiều nhánh song song độc lập',
-    targetDurationSec: 90,
+    title: 'Sửa lỗi gấp khi đang làm tính năng',
+    subtitle: 'Git và GitButler trên cùng tình huống abc-app',
+    targetDurationSec: 120,
     speakerNotes: {
-      durationNote: '90 giây (1.5 phút)',
-      scriptVi: `Điểm đột phá nhất của GitButler chính là khái niệm "Virtual Branches" (Nhánh ảo).
+      durationNote: '2 phút',
+      scriptVi: `Tình huống: đang làm feat/leaderboard_v2 (giao diện bảng xếp hạng mới, nhiều thay đổi chưa commit). Bản dev cần build 4.9.0 nhưng ảnh câu hỏi dạng link không hiển thị. Lỗi được sửa một dòng trong image_widget.dart ngay trên nhánh hiện tại. Yêu cầu: đưa riêng bản sửa lỗi vào dev qua Pull Request.
 
-Thay vì bạn phải checkout branch A hay branch B, GitButler coi Working Directory của bạn là một bảng Kanban chứa nhiều "Branch Lanes" song song.
-Mọi thay đổi chưa commit xuất hiện ở khu vực Unstaged. Tại đây, bạn có toàn quyền gắp (drag & drop) từng file, hoặc thậm chí từng Hunk (khối code khác biệt) vào các nhánh ảo riêng biệt.
+Bên trái, Git: stash toàn bộ thay đổi, chuyển sang dev, tạo nhánh fix/question_image, lấy riêng file từ stash, commit, push, tạo PR, quay lại nhánh tính năng và stash pop. Tổng cộng 9 lệnh, chuyển nhánh 2 lần, có rủi ro nhầm stash và conflict khi stash pop.
 
-Cơ chế hoạt động bên dưới rất thú vị:
-Khi bạn bấm commit trên nhánh "ui-login", GitButler sẽ tính toán trạng thái cây thư mục giả định NHƯ THỂ chỉ có những thay đổi của nhánh đó tồn tại trên nền Target Branch (ví dụ origin/main). Sau đó tạo ra commit Git chuẩn 100%.
-Khi bạn push lên GitHub hoặc GitLab, đồng nghiệp của bạn thấy một PR sạch sẽ tuyệt đối, không hề lẫn lộn code của các nhánh khác đang dở dang trên máy bạn.
+Bên phải, GitButler: tạo nhánh fix/question_image, kéo image_widget.dart sang, commit, tạo PR. 4 thao tác, không chuyển nhánh; code tính năng vẫn nằm nguyên trong editor.
 
-Đặc biệt, bạn không "switch" nhánh mà là "Apply" hoặc "Unapply" nhánh. Bấm unapply, nhánh đó được cất đi an toàn; bấm apply, nó lại hiện diện vào working directory.`,
+Nếu bản sửa lỗi nằm chung file với code tính năng: Git cần git add -p để chọn từng hunk; GitButler kéo riêng từng hunk. Phần này sẽ thao tác trực tiếp trong phần demo.`,
       keyPoints: [
-        'Single Workspace: Không cần nhiều bản clone hay checkout qua lại.',
-        'Hunk-level Assignment: Phân bổ từng đoạn code độc lập vào các nhánh riêng biệt.',
-        'Virtual Branch Lanes: Giao diện dạng cột trực quan tương tự Kanban board.',
-        'Git-native compatibility: Commit sinh ra là Git commit chuẩn mực, tương thích tuyệt đối với GitHub/GitLab.',
+        'Git: 9 lệnh, chuyển nhánh 2 lần, phải stash.',
+        'GitButler: 4 thao tác, không chuyển nhánh.',
+        'Chung file: git add -p so với kéo thả hunk.',
       ],
-      transitionVi: 'Nhưng công việc không phải lúc nào cũng độc lập. Điều gì xảy ra khi nhánh này phụ thuộc vào kết quả của nhánh trước? Đó là lúc ta cần phân biệt Parallel Branches và Stacked Branches.',
+      transitionVi: 'Lợi ích tiếp theo dành cho tính năng lớn như chính giao diện bảng xếp hạng này.',
     },
   },
   {
     id: 4,
     number: '04',
-    title: 'Parallel vs Stacked Branches',
-    subtitle: 'Phân định rõ: Nhánh song song độc lập vs Chuỗi nhánh phụ thuộc (Stacked PRs)',
-    targetDurationSec: 90,
+    title: 'Chia Pull Request lớn thành chuỗi nhỏ',
+    subtitle: 'Stacked branches: mỗi nhánh thêm một file trên nhánh trước; mỗi PR chỉ chứa file mới',
+    targetDurationSec: 75,
     speakerNotes: {
-      durationNote: '90 giây (1.5 phút)',
-      scriptVi: `Rất nhiều bạn ban đầu hay nhầm lẫn giữa Parallel Branches và Stacked Branches. Hãy cùng làm rõ sự khác biệt mấu chốt này.
+      durationNote: '75 giây',
+      scriptVi: `Giao diện bảng xếp hạng mới nếu gửi một lần là một Pull Request khoảng 1.240 dòng, khó review. Cách chia: ba nhánh xếp chồng, mỗi nhánh thêm một phần.
 
-Bên trái: PARALLEL BRANCHES (Nhánh song song độc lập).
-Đây là các nhánh cùng mọc ra từ một Target Branch chung (ví dụ origin/main). Chúng hoàn toàn không phụ thuộc lẫn nhau. Ví dụ: nhánh 'login-ui' và nhánh 'api-bugfix'. Bạn có thể commit, push và merge nhánh nào trước cũng được. Nếu nhánh bugfix được merge vào main, GitButler tự động rebase nhánh còn lại lên base mới.
+Bước 1, nhìn ba cột như bậc thang:
+- Nhánh API có leaderboard_services.dart.
+- Nhánh Provider có services (mờ, vì đã có từ nhánh dưới) và thêm leaderboard_provider.dart.
+- Nhánh UI có cả hai file trên và thêm leaderboard_screen.dart.
+Nhánh sau phải chứa code của nhánh trước vì provider gọi services, screen gọi provider. Mỗi PR chỉ so với nhánh ngay bên dưới, nên chỉ hiển thị file mới: reviewer đọc 180, 260 rồi 800 dòng, từng phần một. Ví dụ đời thường: gửi sếp tài liệu 3 chương, mỗi lần gửi bản đầy đủ nhưng ghi chú chỉ cần đọc chương mới.
 
-Bên phải: STACKED BRANCHES (Nhánh xếp chồng).
-Đây là kỹ thuật chia nhỏ một tính năng lớn thành nhiều Pull Request tuần tự có phụ thuộc: Nhánh 1: Core Database Migration -> Nhánh 2: API Endpoints (dựa trên DB) -> Nhánh 3: Frontend UI (dựa trên API).
-Trong Git truyền thống, quản lý stacked branches là cực hình: mỗi khi sửa 1 commit ở nhánh 1, bạn phải rebase thủ công nhánh 2 và nhánh 3.
-Còn với GitButler, bạn chỉ cần dùng lệnh "but move branch-ui --above branch-api" hoặc kéo thả. GitButler tự động cập nhật base của từng PR trên GitHub và giữ cho cả stack đồng bộ! Reviewer chỉ cần duyệt từng PR nhỏ 100-200 dòng cực kỳ nhàn nhã.`,
+Bước 2: reviewer góp ý PR API (đổi tên trường score thành points). Sửa xong, services trong nhánh API lên v2.
+
+Bước 3, với Git: bản services nằm trong nhánh Provider và nhánh UI vẫn là v1 (viền vàng). Phải tự checkout và rebase từng nhánh, rồi force push.
+
+Bước 4, với GitButler: hai bản đó tự chuyển sang v2 (viền xanh). Không cần lệnh.
+
+Câu chốt: tách để PR dễ review và merge sớm từng phần; GitButler lo việc đồng bộ các nhánh phía trên.`,
       keyPoints: [
-        'Parallel: Nhánh độc lập, chung base, merge nhánh này không ảnh hưởng nhánh kia.',
-        'Stacked: Nhánh phụ thuộc theo thứ tự (Bottom -> Top), review từng phần nhỏ.',
-        'Stacked PRs giúp tăng tốc độ Code Review từ team và giảm rủi ro đại hồng thủy merge conflicts.',
-        'GitButler tự động xử lý rebase cascading khi tầng dưới thay đổi.',
+        'Nhánh sau chứa file của nhánh trước và thêm 1 file mới.',
+        'Mỗi PR chỉ hiển thị file mới so với nhánh bên dưới.',
+        'Git: sửa nhánh dưới phải tự rebase các nhánh trên.',
+        'GitButler: các nhánh trên tự cập nhật.',
       ],
-      transitionVi: 'Lý thuyết nghe rất hấp dẫn. Bây giờ hãy đến với phần Demo trực tiếp để xem cách một lập trình viên thao tác hàng ngày.',
+      transitionVi: 'Bên trong mỗi nhánh, lịch sử commit cũng chỉnh sửa được trực tiếp.',
     },
   },
   {
     id: 5,
     number: '05',
-    title: 'Live Demo & Interactive Simulation',
-    subtitle: 'Thực nghiệm: Tạo đồng thời Web Login UI & Flutter Validation, commit và apply/unapply',
-    targetDurationSec: 300,
+    title: 'Sửa, gộp, chuyển commit bằng kéo thả',
+    subtitle: 'Chỉnh sửa lịch sử commit không cần git rebase -i',
+    targetDurationSec: 75,
     speakerNotes: {
-      durationNote: '5 phút (300 giây)',
-      scriptVi: `Bây giờ chúng ta sẽ đi vào phần Demo thực tế trong 5 phút. 
-Khởi động: mở GitButler Desktop (hoặc terminal với but CLI) trên một repo demo đã chạy 'but setup'.
-Bước 1 (~1 phút): Sửa 2 chỗ độc lập — LoginForm.tsx (Web UI) và auth_validator.dart (Flutter). Chạy 'but status' / 'but diff' để thấy cả hai nằm ở Unstaged.
-Bước 2 (~1 phút): Tạo 2 nhánh song song: 'but branch new feature/login-ui' và 'but branch new fix/flutter-validation'.
-Bước 3 (~1.5 phút): Gán từng thay đổi vào đúng nhánh và commit riêng: 'but commit -b feature/login-ui -m "..." [change-id]' (Desktop thì kéo thả vào lane rồi bấm Commit).
-Bước 4 (~1 phút): 'but unapply fix/flutter-validation' — file Flutter trở về như cũ trong editor; 'but apply fix/flutter-validation' — thay đổi quay lại. Không cần git stash.
-Bước 5 (~0.5 phút): 'but status' hoặc 'but show' để xem mỗi nhánh chỉ chứa đúng một thay đổi.
+      durationNote: '75 giây',
+      scriptVi: `Ba thao tác chỉnh sửa lịch sử thường gặp trước khi gửi review:
 
-Nếu không chạy được app thật: dùng bảng mô phỏng trên slide — bấm Gán → Tạo Commit → bật/tắt Applied. Nhớ nói rõ đây chỉ là mô phỏng minh hoạ, không phải ứng dụng thật.`,
+1. Amend vào commit cũ: một thay đổi nhỏ của podium_position.dart bị sót, cần đưa vào commit "feat: bục xếp hạng". Git: git commit --fixup và git rebase -i --autosquash. GitButler: kéo thay đổi vào commit.
+2. Gộp commit: commit "sửa chính tả" nên gộp vào commit trước. Git: git rebase -i, đổi pick thành squash. GitButler: kéo commit này lên commit kia.
+3. Chuyển commit sang nhánh khác: commit "fix(image): ảnh null" bị tạo nhầm trên nhánh tính năng. Git: git cherry-pick sang nhánh đúng và rebase -i để xoá ở nhánh cũ. GitButler: kéo commit sang nhánh fix/question_image.
+
+Trên slide là prototype kéo thả: kéo file chưa commit vào commit, kéo commit lên commit khác, kéo commit sang nhánh khác. Cột bên phải tự đánh dấu khi hoàn thành từng thao tác.`,
       keyPoints: [
-        'Kịch bản 2 tính năng cùng lúc: Web Login UI & Flutter Input Validation.',
-        'Thao tác gắp hunk: Gán diff vào đúng branch lane tương ứng.',
-        'Thao tác Commit độc lập: Sinh ra 2 commit tách biệt sạch sẽ.',
-        'Thao tác Apply / Unapply: Tạm ẩn hoặc kích hoạt nhánh mà không mất trạng thái.',
-        'Lưu ý: Đây là interactive simulation mô phỏng cơ chế làm việc của GitButler.',
+        'Amend, squash, move commit bằng kéo thả.',
+        'Không cần git rebase -i hay cherry-pick.',
+        'Thao tác trên CLI tương ứng: but amend, but squash, but move.',
       ],
-      transitionVi: 'Không chỉ hỗ trợ con người, GitButler còn có một vũ khí bí mật dành cho kỷ nguyên lập trình với AI: but CLI và AI Coding Agents.',
+      transitionVi: 'Chỉnh sửa lịch sử và cập nhật nhánh đều có thể gây conflict. Cách GitButler xử lý conflict khác với Git.',
     },
   },
   {
     id: 6,
     number: '06',
-    title: 'GitButler + AI Coding Agents',
-    subtitle: 'Tự động hóa quản lý nhánh cho Claude Code, Codex, Cursor qua `but agent setup`',
+    title: 'Conflict và hoàn tác',
+    subtitle: 'Git dừng giữa chừng và chỉ khôi phục commit; GitButler đánh dấu conflict và lưu snapshot',
     targetDurationSec: 90,
     speakerNotes: {
-      durationNote: '90 giây (1.5 phút)',
-      scriptVi: `Một trong những xu hướng bùng nổ gần đây là lập trình với các AI Coding Agents như Claude Code, Cursor, OpenAI Codex hay Devin.
+      durationNote: '90 giây',
+      scriptVi: `Hàng trên, conflict khi cập nhật nhánh từ origin/dev:
+Với Git, rebase dừng tại commit gây conflict; phải xử lý, git add, git rebase --continue trước khi làm việc khác.
+Với GitButler, quá trình cập nhật luôn hoàn tất. Commit có conflict được đánh dấu "conflicted"; xử lý sau bằng Edit mode, các commit phía sau tự rebase lại. Cách tiếp cận này tương tự Jujutsu.
 
-Vấn đề khi cho AI agent chạy trong repository là: agent thường dùng 'git checkout', 'git add .', 'git commit' theo kiểu gom hết, dễ trộn thay đổi của nó với code ta đang viết dở.
-GitButler đã giải quyết bài toán này cực kỳ thông minh thông qua bộ CLI 'but' và câu lệnh:
-$ but agent setup
-
-Wizard này cài GitButler skill cho agent (Codex, Claude Code, Cursor, Copilot...) và ghi hướng dẫn workflow vào repo; trước khi ghi nó hiển thị rõ sẽ ghi gì. Nhờ đó agent học cách:
-1. Tạo một virtual branch riêng cho nhiệm vụ của nó.
-2. Dùng 'but commit -b [branch] [change-id]' để chỉ commit đúng những file nó vừa sửa.
-3. Nếu agent cần sửa nhiều tác vụ song song, nó tạo các nhánh song song mà không đụng chạm tới code dở dang của lập trình viên.
-
-Và CỰC KỲ QUAN TRỌNG: AI agent KHÔNG HỀ bypass code review hay repository permissions. Mọi commit do agent tạo ra vẫn phải qua Pull Request, CI/CD pipeline và sự kiểm duyệt nghiêm ngặt của team như bình thường.`,
+Hàng dưới, hoàn tác thao tác sai:
+Với Git, git reflog chỉ ghi vị trí HEAD; khôi phục bằng git reset --hard làm mất thay đổi chưa commit.
+Với GitButler, trước mỗi thao tác có một snapshot gồm trạng thái nhánh và thay đổi chưa commit. Khôi phục từ lịch sử thao tác, hoặc but undo trên CLI.`,
       keyPoints: [
-        'Lệnh `but agent setup` cài đặt policy hướng dẫn AI agent tuân thủ quy tắc quản lý nhánh.',
-        'Hỗ trợ Claude Code, OpenAI Codex, Cursor, Copilot, Windsurf...',
-        'Agent chỉ thao tác trên virtual branch được phân công, tránh làm bẩn workspace của dev.',
-        'Nguyên tắc bảo mật: AI Agent không vượt quyền (bypass) branch protection hay review rules.',
+        'Conflict: Git dừng rebase; GitButler hoàn tất và đánh dấu commit.',
+        'Hoàn tác: reflog chỉ cho commit; GitButler có snapshot gồm thay đổi chưa commit.',
       ],
-      transitionVi: 'Mọi công cụ đều có hai mặt của nó. Vậy đâu là những hạn chế và đánh đổi mà anh em cần biết trước khi quyết định dùng GitButler?',
+      transitionVi: 'Lợi ích cuối cùng, và là hướng GitButler đang tập trung phát triển: làm việc với AI agent.',
     },
   },
   {
     id: 7,
     number: '07',
-    title: 'Trade-offs: GitButler vs Git vs Worktree',
-    subtitle: 'Đánh giá kỹ thuật khách quan: Giới hạn runtime, xung đột code và bài toán lựa chọn',
-    targetDurationSec: 90,
+    title: 'Nhiều AI agent trong một thư mục',
+    subtitle: 'Mỗi phiên agent được gán vào một nhánh riêng',
+    targetDurationSec: 75,
     speakerNotes: {
-      durationNote: '90 giây (1.5 phút)',
-      scriptVi: `Là kỹ sư, chúng ta không chọn công cụ vì sự hào nhoáng mà vì tính phù hợp kỹ thuật. GitButler có những đánh đổi rất rõ ràng mà anh em cần nắm:
+      durationNote: '75 giây',
+      scriptVi: `Khi nhiều AI agent (ví dụ nhiều phiên Claude Code) cùng sửa code trong một repository, thay đổi của các phiên dễ bị trộn với nhau và với code của lập trình viên. Cách phổ biến hiện nay là tạo một git worktree cho mỗi agent.
 
-Thứ nhất: GitButler KHÔNG LOẠI BỎ Merge Conflicts! Nếu hai nhánh ảo cùng chỉnh sửa chung một dòng code, conflict vẫn xảy ra. Điểm khác biệt là GitButler hiển thị conflict theo từng commit và cho phép resolve trực quan hơn.
+GitButler tích hợp với Claude Code qua hooks. Mỗi lần agent sửa file và khi phiên kết thúc, Claude Code báo cho GitButler. GitButler gán thay đổi của phiên vào một nhánh riêng và tự tạo commit. Agents Tab trong GitButler cho phép chạy các phiên Claude Code gắn với từng nhánh.
 
-Thứ hai: Giới hạn của Shared Working Directory. 
-Vì các nhánh song song cùng nằm trong một folder, nếu nhánh A thêm package vào package.json hoặc đổi schema Database, mà nhánh B chưa có, thì dev server hay app Flutter có thể bị crash khi chạy đồng thời. 
-Trong trường hợp cần chạy đồng thời 2 server (ví dụ backend port 8000 và port 8001) hoặc chạy test suite nặng tốn thời gian, GIT WORKTREE vẫn là lựa chọn số 1 vì nó cách ly hoàn toàn thư mục và node_modules.
-
-Thứ ba: GitButler không thay thế Git. Nó hoạt động như một lớp trừu tượng phía trên Git. Nếu bạn chạy các lệnh checkout/switch truyền thống ở terminal bên ngoài, GitButler sẽ tạm dừng và yêu cầu đồng bộ.`,
+Giới hạn: mỗi phiên gắn với một nhánh, nên một phiên tạo ra thay đổi thuộc nhiều việc khác nhau sẽ không tự tách được. Thay đổi của agent vẫn phải qua Pull Request, CI và code review.`,
       keyPoints: [
-        'Không triệt tiêu conflict: Sửa trùng dòng vẫn sinh conflict như thường lệ.',
-        'Hạn chế Shared Working Directory: Xung đột build dependencies hoặc schema database giữa 2 nhánh.',
-        'So sánh với Git Worktree: Worktree tốn dung lượng đĩa hơn nhưng cách ly runtime 100%.',
-        'Kết luận: GitButler tuyệt vời cho workflow hàng ngày, Worktree tối ưu cho long-running jobs/isolated servers.',
+        'Nhiều phiên agent trong cùng thư mục, mỗi phiên một nhánh.',
+        'Tích hợp qua hooks của Claude Code; Agents Tab trong GitButler.',
+        'Giới hạn: một phiên, một nhánh. Vẫn qua review.',
       ],
-      transitionVi: 'Cuối cùng, hãy cùng đọng lại 3 điểm cốt lõi nhất và bước vào phần thảo luận Q&A.',
+      transitionVi: 'Tiếp theo là demo trên ứng dụng thật.',
     },
   },
   {
     id: 8,
     number: '08',
-    title: 'Takeaways & Q&A',
-    subtitle: '3 bài học cô đọng, lộ trình pilot thử nghiệm và thảo luận cùng team',
-    targetDurationSec: 105,
+    title: 'Demo trên ứng dụng thật',
+    subtitle: 'Thao tác trực tiếp trên GitButler Desktop với abc-app',
+    targetDurationSec: 300,
     speakerNotes: {
-      durationNote: '105 giây (1.75 phút)',
-      scriptVi: `Để đọng lại sau 15 phút hôm nay, mình muốn gửi tới anh em 3 Key Takeaways:
+      durationNote: '5 phút',
+      scriptVi: `Chuẩn bị trước: bản sao abc-app; target branch là origin/dev; nhánh feat/leaderboard_v2 có thay đổi chưa commit ở leaderboard_screen.dart, podium_position.dart, board_border_painter.dart và image_widget.dart (gồm cả đoạn sửa lỗi ảnh câu hỏi).
 
-1. Think in Lanes, Not Stashes: Chuyển tư duy từ việc cất đồ (stash) sang việc tổ chức các luồng công việc song song (branch lanes).
-2. Stacked PRs for Sanity: Hãy dùng stacked branches để chia nhỏ các Pull Request phức tạp. Reviewer sẽ cảm ơn bạn vì một PR 100 dòng dễ đọc hơn một PR 1,500 dòng rất nhiều!
-3. Tool for Context, Not Replacement: GitButler bổ trợ cho Git, không thay thế Git nền tảng.
+1. Sửa lỗi gấp (khoảng 2 phút): tạo nhánh fix/question_image, kéo image_widget.dart sang, commit "fix(image): ảnh câu hỏi dạng link", push và tạo Pull Request vào dev. Nhấn mạnh: không có checkout hay stash, file giao diện mới vẫn mở trong editor.
+2. Tách theo hunk (khoảng 1 phút): mở một file có cả code tính năng và đoạn sửa lỗi, kéo riêng hunk sửa lỗi sang nhánh fix.
+3. Sửa lịch sử commit (khoảng 1 phút): kéo một commit lên commit khác để gộp; kéo một commit sang nhánh khác.
+4. Hoàn tác (khoảng 1 phút): mở lịch sử thao tác, khôi phục trạng thái trước thao tác gộp commit.
 
-Lời khuyên hành động: Đừng vội áp dụng ngay vào repository monolithic production vào sáng thứ Hai. Hãy thử nghiệm nhỏ (pilot) trên một dự án side project hoặc repo demo của cá nhân trong 2-3 ngày, cài đặt but CLI qua docs.gitbutler.com để quen với tư duy mới.
-
-Và câu hỏi mở mình muốn dành cho cả team:
-"Việc gì trong quy trình hiện tại khiến mình phải chuyển nhánh nhiều nhất — và nó có nên là một branch riêng ngay từ đầu không?"
-Xin cảm ơn mọi người và mời anh em đặt câu hỏi!`,
+Nếu ứng dụng thật gặp sự cố, quay lại slide 3 và slide 5 để minh hoạ bằng mô phỏng.`,
       keyPoints: [
-        'Takeaway 1: Giải phóng áp lực context switching bằng Virtual Branches.',
-        'Takeaway 2: Nâng cao văn hóa review với Stacked Pull Requests tinh gọn.',
-        'Takeaway 3: Giữ an toàn cho workspace khi kết hợp cùng AI Coding Agents.',
-        'Đề xuất: Pilot thử nghiệm trên repo demo trước khi dùng cho production.',
-        'Câu hỏi gợi mở thảo luận nhóm về tối ưu hóa quy trình hiện tại.',
+        'Sửa lỗi gấp: tạo nhánh, kéo file, commit, PR.',
+        'Tách hunk trong cùng file.',
+        'Gộp và chuyển commit.',
+        'Khôi phục từ lịch sử thao tác.',
       ],
-      transitionVi: 'Cảm ơn mọi người đã chú ý lắng nghe! Bây giờ chúng ta cùng thảo luận.',
+      transitionVi: 'Sau phần demo, tổng hợp lại các khác biệt.',
+    },
+  },
+  {
+    id: 9,
+    number: '09',
+    title: 'So sánh tổng hợp',
+    subtitle: 'Git và GitButler trên bảy tình huống',
+    targetDurationSec: 60,
+    speakerNotes: {
+      durationNote: '60 giây',
+      scriptVi: `Bảng tổng hợp bảy tình huống đã trình bày và demo. Điểm chung: các thao tác Git yêu cầu chuỗi lệnh hoặc chế độ tương tác (stash, rebase -i, add -p, cherry-pick), trong khi GitButler thực hiện bằng thao tác trực tiếp trên nhánh và commit.
+
+Kết quả cuối cùng trên GitHub là như nhau: commit và Pull Request chuẩn.`,
+      keyPoints: [
+        'Bảy tình huống, cùng kết quả Git chuẩn.',
+        'Khác biệt nằm ở số thao tác và rủi ro trong quá trình.',
+      ],
+      transitionVi: 'Phạm vi áp dụng và các lưu ý.',
+    },
+  },
+  {
+    id: 10,
+    number: '10',
+    title: 'Phạm vi áp dụng và thảo luận',
+    subtitle: 'Khi nào nên dùng, các lưu ý và bước áp dụng thử',
+    targetDurationSec: 90,
+    speakerNotes: {
+      durationNote: '90 giây',
+      scriptVi: `GitButler phù hợp khi team thường xuyên làm nhiều việc song song, có Pull Request lớn và review chậm, thường chỉnh sửa commit trước khi review, hoặc dùng AI agent sửa code trong repository. Với quy trình tuyến tính, mỗi thời điểm một việc, Git là đủ.
+
+Lưu ý:
+1. Conflict vẫn xảy ra khi hai nhánh sửa cùng một dòng.
+2. Các nhánh dùng chung một thư mục làm việc; khi cần chạy hai phiên bản ứng dụng song song, dùng git worktree.
+3. Không chuyển nhánh bằng git checkout bên ngoài trong lúc GitButler quản lý workspace.
+4. Cấu hình target branch origin/dev cho mỗi repository.
+
+Đề xuất áp dụng thử trên bản sao abc-app, bắt đầu với tình huống sửa lỗi gấp. Mời đặt câu hỏi.`,
+      keyPoints: [
+        'Phù hợp: đa nhiệm, PR lớn, sửa lịch sử thường xuyên, AI agent.',
+        'Lưu ý: conflict, thư mục dùng chung, không checkout bên ngoài.',
+        'Áp dụng thử trên bản sao abc-app.',
+      ],
+      transitionVi: 'Phần hỏi đáp.',
     },
   },
 ];

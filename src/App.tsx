@@ -1,18 +1,22 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SLIDES_METADATA } from './data/slidesData';
+import { SlideProps } from './types/presentation';
 import { useStageScale } from './hooks/useStageScale';
 import { useKeyboardNavigation } from './hooks/useKeyboardNavigation';
 
-// Slide components
-import { Slide1Hero } from './components/slides/Slide1Hero';
-import { Slide2ContextSwitch } from './components/slides/Slide2ContextSwitch';
-import { Slide3WhatMakesDifferent } from './components/slides/Slide3WhatMakesDifferent';
-import { Slide4ParallelVsStacked } from './components/slides/Slide4ParallelVsStacked';
-import { Slide5LiveDemo } from './components/slides/Slide5LiveDemo';
-import { Slide6AIAgents } from './components/slides/Slide6AIAgents';
-import { Slide7Tradeoffs } from './components/slides/Slide7Tradeoffs';
-import { Slide8Takeaways } from './components/slides/Slide8Takeaways';
+// Slide components (order defines the deck; must match SLIDES_METADATA)
+import { AgendaSlide } from './components/slides/AgendaSlide';
+import { HeroSlide } from './components/slides/HeroSlide';
+import { OriginSlide } from './components/slides/OriginSlide';
+import { HotfixSlide } from './components/slides/HotfixSlide';
+import { StackedSlide } from './components/slides/StackedSlide';
+import { HistoryEditSlide } from './components/slides/HistoryEditSlide';
+import { SafetySlide } from './components/slides/SafetySlide';
+import { AgentsSlide } from './components/slides/AgentsSlide';
+import { LiveDemoSlide } from './components/slides/LiveDemoSlide';
+import { CompareSlide } from './components/slides/CompareSlide';
+import { ClosingSlide } from './components/slides/ClosingSlide';
 
 // Layout & Modals
 import { HeaderControls } from './components/layout/HeaderControls';
@@ -20,22 +24,28 @@ import { FooterProgress } from './components/layout/FooterProgress';
 import { PresenterNotesModal } from './components/layout/PresenterNotesModal';
 import { KeyboardShortcutsModal } from './components/layout/KeyboardShortcutsModal';
 
-const SLIDE_COMPONENTS = [
-  Slide1Hero,
-  Slide2ContextSwitch,
-  Slide3WhatMakesDifferent,
-  Slide4ParallelVsStacked,
-  Slide5LiveDemo,
-  Slide6AIAgents,
-  Slide7Tradeoffs,
-  Slide8Takeaways,
+const SLIDE_COMPONENTS: React.FC<SlideProps>[] = [
+  AgendaSlide,
+  HeroSlide,
+  OriginSlide,
+  HotfixSlide,
+  StackedSlide,
+  HistoryEditSlide,
+  SafetySlide,
+  AgentsSlide,
+  LiveDemoSlide,
+  CompareSlide,
+  ClosingSlide,
 ];
 
 export function App() {
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(() => {
+  // Slide numbers start at 00, so ?slide=N maps directly to index N.
+  const [pos, setPos] = useState(() => {
     const n = Number(new URLSearchParams(window.location.search).get('slide'));
-    return n >= 1 && n <= SLIDES_METADATA.length ? n - 1 : 0;
+    const index = Number.isInteger(n) && n >= 0 && n < SLIDES_METADATA.length ? n : 0;
+    return { index, step: 0 };
   });
+  const currentSlideIndex = pos.index;
 
   const [direction, setDirection] = useState<1 | -1>(1);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
@@ -44,31 +54,34 @@ export function App() {
 
   const scale = useStageScale();
 
-  // Navigation handlers
+  // Navigation handlers: build steps within a slide come before moving to the next slide.
   const goToNext = useCallback(() => {
-    setCurrentSlideIndex((prev) => {
-      if (prev < SLIDES_METADATA.length - 1) {
+    setPos((p) => {
+      if (p.step < (SLIDES_METADATA[p.index].steps ?? 0)) return { ...p, step: p.step + 1 };
+      if (p.index < SLIDES_METADATA.length - 1) {
         setDirection(1);
-        return prev + 1;
+        return { index: p.index + 1, step: 0 };
       }
-      return prev;
+      return p;
     });
   }, []);
 
   const goToPrev = useCallback(() => {
-    setCurrentSlideIndex((prev) => {
-      if (prev > 0) {
+    setPos((p) => {
+      if (p.step > 0) return { ...p, step: p.step - 1 };
+      if (p.index > 0) {
         setDirection(-1);
-        return prev - 1;
+        // Going back lands on the previous slide fully built.
+        return { index: p.index - 1, step: SLIDES_METADATA[p.index - 1].steps ?? 0 };
       }
-      return prev;
+      return p;
     });
   }, []);
 
   const goToSlide = useCallback((index: number) => {
     if (index >= 0 && index < SLIDES_METADATA.length) {
       setDirection(index > currentSlideIndex ? 1 : -1);
-      setCurrentSlideIndex(index);
+      setPos({ index, step: 0 });
     }
   }, [currentSlideIndex]);
 
@@ -104,7 +117,7 @@ export function App() {
       <div className="hidden print:block">
         {SLIDE_COMPONENTS.map((SlideComp, idx) => (
           <div key={idx} className="print-slide">
-            <SlideComp />
+            <SlideComp step={SLIDES_METADATA[idx].steps ?? 0} onNext={() => {}} />
           </div>
         ))}
       </div>
@@ -135,7 +148,7 @@ export function App() {
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
               className="w-full h-full"
             >
-              <CurrentSlideComponent />
+              <CurrentSlideComponent step={pos.step} onNext={goToNext} />
             </motion.div>
           </AnimatePresence>
         </main>
@@ -143,6 +156,7 @@ export function App() {
         <FooterProgress
           currentSlideIndex={currentSlideIndex}
           totalSlides={SLIDES_METADATA.length}
+          atStart={pos.index === 0 && pos.step === 0}
           onPrev={goToPrev}
           onNext={goToNext}
           onSelectSlide={goToSlide}
